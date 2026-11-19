@@ -12,3 +12,33 @@ Tested locally. The fallback chain works and returned a Yoruba translation throu
 
 ## Run
 Requires Node.js. Add your own keys as environment variables.
+## Usage
+
+```ts
+import { translate } from "./translator.ts";
+import { voiceTranslate, textTranslate } from "./pipeline.ts";
+
+// Text in, translated text out
+const r = await translate("Good morning", "en", "yo");
+// r = { text: "...", provider: "n-atlas" | "gpt-4o-mini" | "mymemory" }
+
+// Voice in, translated text out
+const v = await voiceTranslate(audioBlob, "ig", "en");
+// v = { heard: "...", translated: "...", provider: "..." }
+
+// Text in, translated text out (for testing without audio)
+const t = await textTranslate("Good morning", "en", "ha");
+```
+
+### Functions
+
+- `translate(text, fromCode, toCode)` returns `{ text, provider }`
+- `transcribe(audio: Blob, fromCode)` returns the transcript as a string
+- `voiceTranslate(audio: Blob, fromCode, toCode)` returns `{ heard, translated, provider }`
+- `textTranslate(text, fromCode, toCode)` returns `{ heard, translated, provider }`
+
+Language codes come from `languages.ts`. An unsupported code throws "Unsupported language code".
+
+### Environment
+
+Set `OPENAI_API_KEY` as an environment variable for voice transcription. If translation keys are missing, `translate` falls back to MyMemory (free).
